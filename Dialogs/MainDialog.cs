@@ -84,7 +84,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
                 case FlightBooking.Intent.GetTime:
                     // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                    var getTimeMessageText = $"The current time is {DateTime.Now.ToString("hh\\:mm tt")}";
+                    var currentTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time"));
+                    var getTimeMessageText = $"The current time is {currentTime.ToString("hh\\:mm tt")}";
                     var getTimeMessage = MessageFactory.Text(getTimeMessageText, getTimeMessageText, InputHints.IgnoringInput);
                     await stepContext.Context.SendActivityAsync(getTimeMessage, cancellationToken);
                     break;
