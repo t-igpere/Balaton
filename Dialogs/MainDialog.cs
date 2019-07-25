@@ -82,6 +82,13 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
                     return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
 
+                case FlightBooking.Intent.GetTime:
+                    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
+                    var getTimeMessageText = "I'll give you the time later";
+                    var getTimeMessage = MessageFactory.Text(getTimeMessageText, getTimeMessageText, InputHints.IgnoringInput);
+                    await stepContext.Context.SendActivityAsync(getTimeMessage, cancellationToken);
+                    break;
+
                 case FlightBooking.Intent.GetWeather:
                     // We haven't implemented the GetWeatherDialog so we just display a TODO message.
                     var getWeatherMessageText = "TODO: get weather flow here";
