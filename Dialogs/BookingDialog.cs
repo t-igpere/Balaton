@@ -12,7 +12,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class BookingDialog : CancelAndHelpDialog
     {
-        private const string DestinationStepMsgText = "Where would you like to travel to?";
+        private const string DestinationStepMsgText = "What is your final destination?";
         private const string OriginStepMsgText = "Where are you traveling from?";
 
         public BookingDialog()
