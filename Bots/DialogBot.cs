@@ -44,8 +44,38 @@ namespace Microsoft.BotBuilderSamples.Bots
         {
             Logger.LogInformation("Running dialog with Message Activity.");
 
-            // Run the Dialog with the new message Activity.
-            await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+
+            var conversationStateAccessors = ConversationState.CreateProperty<ConversationData>(nameof(ConversationData));
+            var conversationData = await conversationStateAccessors.GetAsync(turnContext, () => new ConversationData());
+
+            var userStateAccessors = UserState.CreateProperty<UserProfile>(nameof(UserProfile));
+            var userProfile = await userStateAccessors.GetAsync(turnContext, () => new UserProfile());
+
+            if (string.IsNullOrEmpty(userProfile.Name))
+            {
+                // First time around this is set to false, so we will prompt user for name.
+                if (conversationData.PromptedUserForName)
+                {
+                    // Set the name to what the user provided.
+                    userProfile.Name = turnContext.Activity.Text?.Trim();
+
+                    // Acknowledge that we got their name.
+                    await turnContext.SendActivityAsync($"Thanks, {userProfile.Name}!");
+                }
+                else
+                {
+                    // Prompt the user for their name.
+                    await turnContext.SendActivityAsync($"Hello! What is your name?");
+
+                    // Set the flag to true, so we don't prompt in the next turn.
+                    conversationData.PromptedUserForName = true;
+                }
+            }
+            else
+            {
+                // Run the Dialog with the new message Activity.
+                await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+            }
         }
     }
 }
